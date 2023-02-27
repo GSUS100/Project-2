@@ -216,7 +216,41 @@ private void drop() {
         if (creditsCompleted[i] >= 120) {
             System.out.println("Student " + (i+1) + " has completed " + creditsCompleted[i] + " credits and is eligible to graduate.");
         }
+    } 
+        private void displayTuitionDue() {
+    DecimalFormat df = new DecimalFormat("#.##"); // set the format for displaying tuition
+    for (int i = 0; i < enrollmentList.size(); i++) {
+        String status = "";
+        double tuitionDue = 0.0;
+        int credits = enrollmentList.get(i).getCredits();
+        if (credits >= 12) {
+            status = "Full Time";
+            if (credits > 16) {
+                tuitionDue = residentTuition + (credits - 16) * partTimeTuition;
+            } else {
+                tuitionDue = residentTuition;
+            }
+            if (enrollmentList.get(i).isResident()) {
+                tuitionDue = tuitionDue - enrollmentList.get(i).getScholarship();
+            } else if (enrollmentList.get(i).getState().equals("NY")) {
+                tuitionDue = tuitionDue - discountNY;
+            } else if (enrollmentList.get(i).getState().equals("CT")) {
+                tuitionDue = tuitionDue - discountCT;
+            }
+            if (enrollmentList.get(i).isInternational() && !enrollmentList.get(i).isStudyAbroad()) {
+                if (credits < 12) {
+                    tuitionDue = 0;
+                } else {
+                    tuitionDue = tuitionDue + internationalFee;
+                }
+            }
+        } else {
+            status = "Part Time";
+            tuitionDue = credits * partTimeTuition;
+        }
+        System.out.println(enrollmentList.get(i).getName() + ": " + status + ", " + credits + " credits, $" + df.format(tuitionDue));
     }
+}
     /**
      * You MUST keep this
      * method under 40 lines for readability,
@@ -255,6 +289,8 @@ private void drop() {
                     System.out.println("Roster Manager terminated."); System.exit(0); break;
                 case "PE":
                     displayEnrollmentList(); break;
+                case "PT": 
+                    displayTuitionDue(); break;
                 case "SE": 
                     semesterEnd(); break;
                 default:
