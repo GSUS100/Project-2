@@ -2,10 +2,6 @@
 import java.util.Calendar;
 import java.util.Scanner;
 
-/**
- * Class that handles i/o
- * @author Yehun Kim, Nelson Reyes
- */
 
 public class TuitionManager {
     Scanner sc = new Scanner(System.in);
@@ -97,7 +93,7 @@ public class TuitionManager {
         }
         // if the date and student are valid, add the student to the roster
         roster.add(student);
-        System.out.println(profile.toString()+ " added to the roster.");
+        System.out.println(profile.toString()+ " has been added to the roster.");
     }
 
     /**
@@ -113,7 +109,7 @@ public class TuitionManager {
         Profile profile = new Profile(lname, fname, date);
         //if there is no student, print X is not in the roster..
         if (!roster.contains(student)) {
-            System.out.println(profile.toString()+ " is not in the roster..");
+            System.out.println(profile.toString()+ " is not in the roster.");
             return;
         }
 
@@ -150,13 +146,20 @@ public class TuitionManager {
         }
 
     }
+    try {
+        loadStudentRoster();
+        System.out.println("Student roster has been loaded.");
+    } catch (IOException e) {
+        System.out.println("Error: Failed to load student roster.");
+        e.printStackTrace();
+    }
     /**
      * You MUST keep this
      * method under 40 lines for readability,
      */
     public void run()
     {
-        System.out.println("Roster Manager running...");
+        System.out.println("Tuition Manager running...");
         boolean run = false;
         while (!run)
         {
@@ -182,10 +185,14 @@ public class TuitionManager {
                 case "C":
                     changeMajor();
                     break;
+                    case "E":                
+                    break;
                 case "Q":
-                    System.out.println("Roster Manager terminated."); System.exit(0); break;
+                    System.out.println("Roster Manager terminated."); System.exit(0); 
+                    break;
                 default:
-                    System.out.println(command + " is an valid command!."); break;
+                    System.out.println(command + " is an invalid command!."); 
+                    break;
             }
         }
     } //run()
