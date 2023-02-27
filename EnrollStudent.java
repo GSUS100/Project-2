@@ -2,17 +2,14 @@ public class EnrollStudent {
     private Profile profile;
     private int creditsEnrolled;
 
-    public EnrollStudent(Profile profile, int creditsEnrolled) {
+    public EnrollStudent(Profile profile, int creditsEnrolled)
+    {
         this.profile = profile;
         this.creditsEnrolled = creditsEnrolled;
     }
 
     public Profile getProfile() {
         return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
     }
 
     public int getCreditsEnrolled() {
@@ -25,18 +22,19 @@ public class EnrollStudent {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof EnrollStudent)) {
-            return false;
-        }
-        EnrollStudent enrollStudent = (EnrollStudent) obj;
-        return enrollStudent.profile.equals(this.profile);
+        if (this == obj) return true;
+        if (!(obj instanceof EnrollStudent)) return false;
+
+        EnrollStudent enrolledStudent = (EnrollStudent) obj;
+
+        if(!super.equals(enrolledStudent)) return false;
+
+        return enrolledStudent.getCreditsEnrolled() == creditsEnrolled;
+
     }
 
     @Override
     public String toString() {
-        return "Profile: " + profile.toString() + ", Credits Enrolled: " + creditsEnrolled;
+        return profile.toString() + " Credits Enrolled: " + creditsEnrolled;
     }
 }
