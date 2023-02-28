@@ -1,7 +1,7 @@
 
 /**
  * Roster class
- * @author Yehun Kim, Nelson Reyes
+ * @author Giancarlo Andretta, Nelson Reyes
  */
 
 public class Roster {
@@ -22,6 +22,44 @@ public class Roster {
             }
         }
         return -1;
+    }
+
+    public Student getStudent(Student student)
+    {
+        int i = find(student);
+        if(i != 1)
+            return roster[i];
+        else
+            return null;
+    }
+
+    public Student findStudentByProfile(Profile p)
+    {
+        for (int i = 0; i < size; i++) {
+            if (roster[i].getProfile().equals(p)) {
+                return roster[i];
+            }
+        }
+        return null; //not found
+    }
+
+    public void setScholarship(Student student, int amount) {
+        if(amount > 10000 || amount < 1)
+            System.out.println("Scholarship must be between $1 and $10,000");
+        else {
+            if (!student.isResident()) {
+                System.out.println("Student must be a resident to recieve a scholarship.");
+            }
+            else
+            {
+                if(student instanceof Resident)
+                {
+                    ((Resident) student).setScholarship(amount);
+                }
+            }
+        }
+
+
     }
 
     private void grow() {
@@ -160,6 +198,31 @@ public class Roster {
         }
     }
 
+    public void addCompletedCredits(Enrollment enrollment)
+    {
+        Student [] completedRoster = new Student[roster.length]; //Max length aka all students graduate
+        int grads = 0;
+
+        EnrollStudent [] enrolledStudents = enrollment.getEnrolledStudents();
+        for(int i = 0; i < enrolledStudents.length; i++)
+        {
+            Student student = findStudentByProfile(enrolledStudents[i].getProfile());
+            student.addCreditCompleted(enrolledStudents[i].getCreditsEnrolled());
+
+            if(student.getCreditCompleted() >= 120)
+            {
+                completedRoster[grads] = student;
+                grads++;
+            }
+        }
+
+        System.out.println("The following students are now graduated! :");
+        for(int i = 0; i < completedRoster.length; i++)
+        {
+            System.out.println(completedRoster[i].toString());
+        }
+
+    }
 
 
     /**
