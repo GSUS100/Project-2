@@ -57,6 +57,13 @@ public class TuitionManager {
 
     private void add(String type) {
 
+        fname = sc.next();
+        lname = sc.next();
+        dateVal = sc.next();
+        major = sc.next().toUpperCase();
+        creditString = sc.next();
+        date = new Date(dateVal);
+
         try {  // invalid credit value
             credit = Integer.parseInt(creditString);
             if (credit < 0) {
@@ -131,8 +138,10 @@ public class TuitionManager {
         if (type.equals("AR")) {
             student = new Resident(profile, Major.valueOf(major), credit);
         } else if (type.equals("AI")) {
+            extraParam = sc.next();
             student = new International(profile, Major.valueOf(major), credit, Boolean.parseBoolean(extraParam));
         } else if (type.equals("AT")) {
+            extraParam = sc.next();
             student = new TriState(profile, Major.valueOf(major), credit, extraParam);
         } else {
             student = new NonResident(profile, Major.valueOf(major), credit);
@@ -145,8 +154,6 @@ public class TuitionManager {
         roster.add(student);
         System.out.println(profile.toString()+ " has been added to the roster.");
     }
-
-
 
     /**
      Method to load in data from txt file into the roster.
@@ -247,10 +254,10 @@ public class TuitionManager {
         date = new Date(dateVal);
 
 
-        Student student = new Resident(new Profile(lname, fname, date), Major.valueOf(major),credit); //Assumes resident but does not matter.??
         Profile profile = new Profile(lname, fname, date);
-        //if there is no student, print X is not in the roster..
-        if (!roster.contains(student)) {
+        Student student = roster.findStudentByProfile(profile);
+
+        if (roster == null) {
             System.out.println(profile.toString()+ " is not in the roster.");
             return;
         }
@@ -275,6 +282,8 @@ public class TuitionManager {
             System.out.println("Major code invalid: " + major);
             return;
         }
+
+
         Student student = new Resident(new Profile(lname, fname, date),Major.valueOf(major),credit);
         Profile profile = new Profile(lname, fname, date);
         if (!roster.contains(student)) {
@@ -336,6 +345,8 @@ public class TuitionManager {
         dateVal = sc.next();
         date = new Date(dateVal);
 
+
+
         EnrollStudent student = new EnrollStudent(new Profile(lname, fname, date), credit);
         Profile profile = new Profile(lname, fname, date);
 
@@ -347,9 +358,7 @@ public class TuitionManager {
         enrollment.remove(student);
         System.out.println(profile.toString() + " has been dropped from the roster.");
     }
-    private void displayEnrollmentList() {
 
-    }
     private void semesterEnd() {
 //        for (int i = 0; i < creditsCompleted.length; i++) {
 //            creditsCompleted[i] += enrolledCredits[i];
@@ -358,9 +367,7 @@ public class TuitionManager {
 //            }
 //        }
 
-
-
-
+        roster.addCompletedCredits(enrollment);
     }
 
     public void setScholarship() {
@@ -392,41 +399,7 @@ public class TuitionManager {
                 String command = " ";
                 command = sc.next();
 
-                if(command.equals("AT") || command.equals("AR") || command.equals("AN") || command.equals("AI"))
-                {
-                    fname = sc.next(); lname = sc.next(); dateVal = sc.next(); major = sc.next().toUpperCase(); creditString = sc.next(); date = new Date(dateVal);
-                }
-
-                if(command.equals("AI")) { //Read if study abroad or not
-                    if(sc.hasNext())
-                        extraParam = sc.next();
-                    else //If no value ex. AI Oliver Chang 11/30/2000 BAIT 78 , set to false
-                        extraParam = "false";
-                }
-                if(command.equals("AT")) {
-                    extraParam = sc.next(); add("AT");
-                }
-                else if(command.equals("E")) {
-                    enroll();
-                }
-                else if(command.equals("D")) {
-                    fname = sc.next(); lname = sc.next(); dateVal = sc.next(); date = new Date(dateVal);
-                }
-                else if(command.equals("PE"))
-                {
-                    enrollment.print();
-                }
-                else if(command.equals("PT"))
-                {
-                    enrollment.printTuitionDue(roster);
-                }
-                else if(command.equals("SE"))
-                {
-                    semesterEnd();
-                }
-
-                switch (command)
-                {
+                switch (command) {
                     case "AT":
                         add("AT"); break;
                     case "AR":
@@ -434,11 +407,17 @@ public class TuitionManager {
                     case "AN":
                         add("AN");
                     case "AI":
+                        if(sc.hasNext())
+                            extraParam = sc.next();
+                        else //If no value ex. AI Oliver Chang 11/30/2000 BAIT 78 , set to false
+                            extraParam = "false";
                         add("AI");
                     case "E":
                         enroll(); break;
                     case "D":
                         drop(); break;
+                    case "R":
+                        remove();
                     case "S":
                         setScholarship();
                     case "PE":
@@ -447,7 +426,6 @@ public class TuitionManager {
                         enrollment.printTuitionDue(roster);
                     case "SE":
                         semesterEnd(); break;
-
                     case "P":
                         roster.sortByProfile(); break;
                     case "PS":
