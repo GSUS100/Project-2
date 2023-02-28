@@ -15,6 +15,7 @@ public class Resident extends Student {
         return scholarship;
     }
 
+
     /* No need to override isValid from super since there are no new conditions for a resident */
 
     @Override
